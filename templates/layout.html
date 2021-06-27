@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='books.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='homeBooks.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='contact.css') }}">
+    <title>Book Store</title>
+</head>
+
+<body>
+    <header>
+        <div class="logoContainer">
+            <img src="{{ url_for('static', filename='images/580b585b2edbce24c47b276e.png') }}" class="logoImage" alt="store-logo">
+            <span class="logoText">
+                Book Store</a>
+            </span>
+        </div>
+    </header>
+    <section>
+        <div class="menuBar">
+            <a href="/">Home</a>
+            <div class="dropdown">
+                <button class="dropdownButton">EBooks</button>
+                <div class="dropdownList">
+                    <a href="#">Science Fiction</a>
+                    <a href="philosophyBooks">Philosophy</a>
+                    <a href="#">Novels</a>
+                </div>
+            </div>
+            <a href="contact">Contact Us</a>
+            <div class="searchContainer">
+                <input type="text" placeholder="Search a book here" name="search">
+                <button type="submit">Search</button>
+            </div>
+        </div>
+    </section>
+    <section>
+        {% block body %}
+        {% endblock %}
+    </section>
+    <footer>
+        <p>Natasha Mora
+            <br>
+            Programación de Internet e Intranet - UNIVA 2021
+        </p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% block body %}
+<section>
+    <span class="textTitles">
+        <p>About this page</p>
+        <hr>
+    </span>
+    <span class="bodyText">
+        <p>
+            This page was created with the purpose of having a big repository
+            of any kind of books.
+            <br>
+            So if any person wants to make a consult or entertain with a book they can freely download the books we
+            have.
+            <hr>
+        <p style="font-size: 16px; text-align: left; margin-top: 40px;">
+            If you need any special book we don't have, you can leave your information below, so we can send you via
+            email
+            the book you need.
+        </p><br>
+        </p>
+    </span>
+</section>
+<section>
+    <div class="contactContainer">
+        <form action="./contactData.py" method="GET">
+            <span style="font-size: 18px;">
+                <div style="text-align: center;">
+                    <label for="">Name:</label>
+                    <input type="text" name="userName" id="" maxlength="50" size="50" style="margin-left: 50px;">
+                    <label for="" style="margin-left: 70px;">Email:</label>
+                    <input type="email" name="userEmail" id="" maxlength="35" size="35"><br><br>
+                </div>
+                <label for="" style="margin-left: 310px;">Book Name:</label>
+                <input type="text" name="bookName" id="" maxlength="50" size="50" style="margin-left: 7px;"><br><br>
+                <label for="" style="margin-left: 310px;">Author:</label>
+                <input type="text" name="bookAuthor" id="" maxlength="50" size="50" style="margin-left: 43px;"><br><br>
+                <button type="submit" class="contactEnterButton">Submit</button>
+            </span>
+        </form>
+    </div>
+</section>
+{% endblock %}

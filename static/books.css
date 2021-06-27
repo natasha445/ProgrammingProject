@@ -1,0 +1,104 @@
+.authorsContainer {
+    display: flex;
+}
+
+.philosophyBooksContainer {
+    flex: 1;
+    margin-top: 30px;
+}
+
+.verticalDivider {
+    border-left: 2px solid gray;
+    margin-left: 70px;
+    margin-top: 30px;
+}
+
+.booksList {
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    margin-left: 50px;
+}
+
+dt {
+    color: #187795;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+a {
+    color: #333333;
+}
+
+.title {
+    color: #4aa96c;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.downloadButton {
+    background: #D44D5C;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px;
+    margin-bottom: 50px;
+    cursor: pointer;
+}
+  
+.downloadButton:hover {
+    background-color: #187795;
+    color: #FFFFFF;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+  
+.tooltip .tooltipText {
+    visibility: hidden;
+    width: 180px;
+    background-color: #E3B5A4;
+    color: #000000;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    margin-left: -60px;
+}
+  
+.tooltip .tooltipText::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #E3B5A4 transparent transparent transparent;
+}
+  
+.tooltip:hover .tooltipText {
+    visibility: visible;
+ }
+
+.tooltipTextFont {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 500;
+}
+
+.authorInfo {
+    vertical-align: top;
+    display: inline-block;
+}
+
+.authorBiography {
+    display: block;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+}

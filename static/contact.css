@@ -1,0 +1,23 @@
+.contactContainer {
+    width: 1000px;
+    height: 200px;
+    outline: 2px dashed #000;
+    outline-offset: 20px;
+    margin-left: 220px;
+    margin-bottom: 50px;
+}
+
+.contactEnterButton {
+    background: #D44D5C;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px;
+    margin-left: 450px;
+    margin-bottom: 50px;
+    cursor: pointer;
+}
+  
+.contactEnterButton:hover {
+    background-color: #187795;
+    color: #FFFFFF;
+}
