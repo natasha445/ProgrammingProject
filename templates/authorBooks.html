@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block body %}
+<section>
+    <div class="authorsContainer">
+        <div class="authorInfo">
+            <img src="{{ authorImage }}" alt="author-image"
+                style="width: 200px; height: 259px; padding-left: 50px; padding-top: 40px;">
+            <span class="authorBiography" style="margin-top: 20px; margin-left: 35px; width: 240px;">
+                {{ authorDescription }}
+                <br><br>
+                <p style="color: #4aa96c; font-weight: bold;">
+                    {{ authorDate }}
+                </p>
+            </span>
+        </div>
+        <div class="verticalDivider" style="height: 1000px; margin-left: 35px;"></div>
+        <div class="sectionBooksContainer">
+            <span class="textTitles">
+                <div id="classicBooks" style="margin-top: 20px;">
+                    {% for book in books %}
+                    <div class="classicBooksImages">
+                        <div class="tooltip">
+                            <span class="tooltipText" style="left: 39%;">
+                                <p class="tooltipTextFont">
+                                    {{ book[5] }}
+                                </p>
+                            </span>
+                            <img src="{{ book[9] }}" alt="book-image" style="width: 250px;">
+                        </div>
+                        <div class="classicBooksTitle">
+                            <p style="font-size: 22px;">{{ book[1] }}</p>
+                            <div class="classicBooksDescription">
+                                <p style="font-size: 16px;"><i>{{ book[8] }}</i>
+                                    <br>
+                                    {{ book[3] }}
+                                </p>
+                                <button type="button" class="downloadButton" onclick="location.href='{{ book[4] }}'">Download EBook</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </span>
+        </div>
+    </div>
+</section>
+{% endblock %}
