@@ -12,7 +12,12 @@ mysql = MySQL(app)
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    myCursor = mysql.connection.cursor()
+    sqlQuery = f"SELECT * FROM books WHERE IsActive = 1 AND IsClassicBook = 1"
+    myCursor.execute(sqlQuery)
+    classicBooks = myCursor.fetchall()
+    myCursor.close()
+    return render_template('index.html', classicBooks = classicBooks)
 
 @app.route("/contact/")
 def contact():

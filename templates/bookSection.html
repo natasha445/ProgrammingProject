@@ -14,7 +14,7 @@
                 Best {{ section }} Books
             </span>
             <span class="textTitles">
-                <div id="classicBooks" style="margin-top: 40px;">
+                <div id="classicBooks" style="margin-top: 40px; padding-left: 25px; padding-right: 25px;">
                     {% for book in bestBooks %}
                     <div class="classicBooksImages">
                         <div class="tooltip">
@@ -28,9 +28,11 @@
                         <div class="classicBooksTitle">
                             <p style="font-size: 22px;">{{ book[1] }}</p>
                             <div class="classicBooksDescription">
-                                <p style="font-size: 16px;"><i>{{ book[8] }}</i>
+                                <p style="font-size: 16px;"><i>Type: {{ book[8] }}</i>
                                     <br>
-                                    {{ book[3] }}
+                                    Year: {{ book[3] }}
+                                    <br>
+                                    Author: {{ book[2] }}
                                 </p>
                                 <button type="button" class="downloadButton" onclick="location.href='{{ book[4] }}'">Download EBook</button>
                             </div>

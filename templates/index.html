@@ -5,64 +5,31 @@
         <p>Classic books of the week</p>
         <hr>
         <div id="classicBooks">
+            {% for book in classicBooks %}
             <div class="classicBooksImages">
-                <img src="{{ url_for('static', filename='images/war-of-the-worlds.jpg') }}" alt="war-of-the-worlds" style="width: 250px;">
-                <div class="classicBooksTitle">
-                    <p style="font-size: 22px;">The war of the Worlds</p>
-                    <div class="classicBooksDescription">
-                        <p style="font-size: 16px;">Author: H. G. Wells
-                            <br>
-                            Year: 1898
-                            <br>
-                            Genre: Novel, Science Fiction
+                <div class="tooltip">
+                    <span class="tooltipText" style="left: 39%;">
+                        <p class="tooltipTextFont">
+                            {{ book[5] }}
                         </p>
+                    </span>
+                    <img src="{{ book[9] }}" alt="book-image" style="width: 250px;">
+                </div>
+                <div class="classicBooksTitle">
+                    <p style="font-size: 22px;">{{ book[1] }}</p>
+                    <div class="classicBooksDescription">
+                        <p style="font-size: 16px;">
+                            Author: {{ book[2] }}
+                            <br>
+                            <i>Type: {{ book[8] }}</i>
+                            <br>
+                            Year: {{ book[3] }}
+                        </p>
+                        <button type="button" class="downloadButton" onclick="location.href='{{ book[4] }}'">Download EBook</button>
                     </div>
                 </div>
             </div>
-            <div class="classicBooksImages">
-                <img src="{{ url_for('static', filename='images/1984.jpg') }}" alt="1984" style="width: 250px;">
-                <div class="classicBooksTitle">
-                    <p style="font-size: 22px;">1984</p>
-                    <div class="classicBooksDescription">
-                        <p style="font-size: 16px;">Author: George Orwell
-                            <br>
-                            Year: 1949
-                            <br>
-                            Genre: Science Fiction, 
-                            <br>
-                            Social science fiction
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="classicBooksImages">
-                <img src="{{ url_for('static', filename='images/dracula.jpg') }}" alt="dracula" style="width: 250px;">
-                <div class="classicBooksTitle">
-                    <p style="font-size: 22px;">Dracula</p>
-                    <div class="classicBooksDescription">
-                        <p style="font-size: 16px;">Author: Bram Stoker
-                            <br>
-                            Year: 1897
-                            <br>
-                            Genre: Novel, Horror fiction
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="classicBooksImages">
-                <img src="{{ url_for('static', filename='images/brothers-karamazov.jpg') }}" alt="brothers-karamazov" style="width: 250px;">
-                <div class="classicBooksTitle">
-                    <p style="font-size: 22px;">The Brothers Karamazov</p>
-                    <div class="classicBooksDescription">
-                        <p style="font-size: 16px;">Author: Fyodor Dostoyevsky
-                            <br>
-                            Year: 1880
-                            <br>
-                            Genre: Philosophical novel
-                        </p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </span>
 </section>
