@@ -1,0 +1,108 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+    <div class="pageContainer" style="width: 950px; margin-top: 50px;">
+        <div class="containerElements">
+            <div class="adminButtonImages">
+                <img src="/static/images/icons/users.png" style="width: 230px; padding-right: 60px;" 
+                    onmouseover="this.src='/static/images/icons/users-hover.png'"
+                    onmouseout="this.src='/static/images/icons/users.png'"
+                    onclick="showDiv('users');">
+                <img src="/static/images/icons/books.png" style="width: 230px;"
+                    onmouseover="this.src='/static/images/icons/books-hover.png'"
+                    onmouseout="this.src='/static/images/icons/books.png'"
+                    onclick="showDiv('books');">
+            </div>
+            <div class="buttonName">
+                <p style="display: inline-block; margin-left: 285px;">Users</p>
+                <p style="display: inline-block; margin-left: 215px;">Books</p>
+            </div>
+            <div id="users" class="buttonOptionsMenu" style="display: none;">
+                <div class="adminButtonImages" style="padding-left: 130px;">
+                    <a style="text-decoration:none;" href="/adminContent/{{ 'insertUsers' }}">
+                        <img src="/static/images/icons/new.png" style="width: 150px; padding-right: 30px;" 
+                        onmouseover="this.src='/static/images/icons/new-hover.png'"
+                        onmouseout="this.src='/static/images/icons/new.png'"></a>
+                    <a style="text-decoration:none;" href="/adminContent/{{ 'updateUsers' }}">
+                        <img src="/static/images/icons/update.png" style="width: 150px; padding-right: 30px;" 
+                        onmouseover="this.src='/static/images/icons/update-hover.png'"
+                        onmouseout="this.src='/static/images/icons/update.png'"></a>
+                    <a style="text-decoration:none;" href="/adminContent/{{ 'deactivateUsers' }}">
+                        <img src="/static/images/icons/deactivate.png" style="width: 150px; padding-right: 30px;" 
+                        onmouseover="this.src='/static/images/icons/deactivate-hover.png'"
+                        onmouseout="this.src='/static/images/icons/deactivate.png'"></a>
+                    <a style="text-decoration:none;" href="/adminContent/{{ 'listUsers' }}">
+                        <img src="/static/images/icons/list.png" style="width: 150px; padding-right: 30px;" 
+                        onmouseover="this.src='/static/images/icons/list-hover.png'"
+                        onmouseout="this.src='/static/images/icons/list.png'"></a>
+                </div>
+                <div class="buttonName">
+                    <p style="display: inline-block; padding-left: 180px;">New</p>
+                    <p style="display: inline-block; padding-left: 110px;">Update</p>
+                    <p style="display: inline-block; padding-left: 70px;">Deactivate</p>
+                    <p style="display: inline-block; padding-left: 70px;">Show All</p>
+                </div>
+            </div>
+            <div id="books" class="buttonOptionsMenu" style="display: none;">
+                <div class="adminButtonImages" style="padding-left: 130px;">
+                    <a style="text-decoration:none;" href="/adminContent/{{ 'insertBooks' }}">
+                        <img src="/static/images/icons/new.png" style="width: 150px; padding-right: 30px;" 
+                        onmouseover="this.src='/static/images/icons/new-hover.png'"
+                        onmouseout="this.src='/static/images/icons/new.png'"></a>
+                    <a style="text-decoration:none;" href="/adminContent/{{ 'updateBooks' }}">
+                        <img src="/static/images/icons/update.png" style="width: 150px; padding-right: 30px;" 
+                        onmouseover="this.src='/static/images/icons/update-hover.png'"
+                        onmouseout="this.src='/static/images/icons/update.png'"></a>
+                    <a style="text-decoration:none;" href="/adminContent/{{ 'deactivateBooks' }}">
+                        <img src="/static/images/icons/deactivate.png" style="width: 150px; padding-right: 30px;" 
+                        onmouseover="this.src='/static/images/icons/deactivate-hover.png'"
+                        onmouseout="this.src='/static/images/icons/deactivate.png'"></a>
+                    <a style="text-decoration:none;" href="/adminContent/{{ 'listBooks' }}">
+                        <img src="/static/images/icons/list.png" style="width: 150px; padding-right: 30px;" 
+                        onmouseover="this.src='/static/images/icons/list-hover.png'"
+                        onmouseout="this.src='/static/images/icons/list.png'"></a>
+                </div>
+                <div class="buttonName">
+                    <p style="display: inline-block; padding-left: 180px;">New</p>
+                    <p style="display: inline-block; padding-left: 110px;">Update</p>
+                    <p style="display: inline-block; padding-left: 70px;">Deactivate</p>
+                    <p style="display: inline-block; padding-left: 70px;">Show All</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var divList = ["users", "books"];
+        var visibleDivId = null;
+
+        function showDiv(divId) {
+            if (visibleDivId === divId) {
+                visibleDivId = null;
+            } else {
+                visibleDivId = divId;
+            }
+
+            hideNonVisibleDiv();
+        }
+
+        function hideNonVisibleDiv() {
+            var i, divId, div;
+
+            for (i = 0; i < divList.length; i++) {
+                divId = divList[i];
+                div = document.getElementById(divId);
+                if (visibleDivId === divId) {
+                    div.style.display = "block";
+                } else {
+                    div.style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

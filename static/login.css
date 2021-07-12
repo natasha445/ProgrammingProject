@@ -1,0 +1,72 @@
+body {
+    background: linear-gradient(to right bottom, #6d56cb, #c550c1);
+}
+
+.pageContainer {
+    background: #FFF;
+    margin: auto;
+    padding: 10px;
+    margin-top: 75px;
+    border-radius: 15px;
+    display: flex;
+}
+
+.containerElements {
+    flex: 1;
+    margin-top: 30px;
+}
+
+.loginTitle {
+    text-align: center;
+    font-weight: bold;
+    font-size: 35px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.loginField {
+    border-radius: 25px;
+    width: 260px;
+    height: 40px;
+    font-size: 20px;
+}
+
+.loginButton {
+    margin-top: 50px;
+    background-color: #1eceab;
+    font-size: 18px;
+    border: none;
+    color: #FFF;
+    padding: 15px 108px;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+.menuText {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.adminButtonImages {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+    padding-left: 200px;
+    cursor: pointer;
+}
+
+.usersButton:hover {
+    background: url("/static/images/icons/users-hoover.png") no-repeat;
+}
+
+.buttonName {
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.buttonOptionsMenu {
+    margin-top: 30px;
+}

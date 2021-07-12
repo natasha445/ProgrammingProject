@@ -1,0 +1,27 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+    {% if type == 'insertUsers' %}
+        <p>INSERT USERS</p>
+    {% elif type == 'insertBooks' %}
+        <p>INSERT BOOKS</p>
+    {% elif type == 'deactivateUsers' %}
+        <p>DEACTIVATE USERS</p>
+    {% elif type == 'deactivateBooks' %}
+        <p>DEACTIVATE BOOKS</p>
+    {% elif type == 'updateUsers' %}
+        <p>UPDATE USERS</p>
+    {% elif type == 'updateBooks' %}
+        <p>UPDATE BOOKS</p>
+    {% elif type == 'listUsers' %}
+        <p>LIST USERS</p>
+    {% else %}
+        <p>LIST BOOKS</p>
+    {% endif %}
+</body>
+</html>
