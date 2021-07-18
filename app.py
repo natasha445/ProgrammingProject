@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -9,6 +9,8 @@ app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'bookstore'
 
 mysql = MySQL(app)
+
+app.secret_key = "myKey"
 
 @app.route("/")
 def index():
@@ -30,34 +32,31 @@ def adminPage():
 @app.route("/bookSection/<section>")
 def bookSection(section):
     myCursor = mysql.connection.cursor()
-    sqlQuery = f"SELECT * FROM books WHERE Section = '{section}' AND IsActive = 1 AND IsBestBook = 1"
+    sqlQuery = f"SELECT * FROM sectionBooks WHERE BookSection = '{section}'"
     myCursor.execute(sqlQuery)
     bestBooks = myCursor.fetchall()
 
-    sqlQuery = f"SELECT * FROM authors WHERE Section = '{section}' AND IsActive = 1"
+    sqlQuery = f"SELECT * FROM sectionAuthors WHERE Section = '{section}'"
     myCursor.execute(sqlQuery)
     authors = myCursor.fetchall()
-
     myCursor.close()
+
     return render_template('bookSection.html', bestBooks = bestBooks, authors = authors, section = section)
 
 @app.route("/authorBooks/<name>")
 def authorBooks(name):
     myCursor = mysql.connection.cursor()
-    sqlQuery = f"SELECT * FROM books WHERE Author = '{name}' AND IsActive = 1"
+    sqlQuery = f"SELECT * FROM authorBooks WHERE Author = '{name}'"
     myCursor.execute(sqlQuery)
-    books = myCursor.fetchall()
-
-    sqlQuery = f"SELECT * FROM authors WHERE Name = '{name}'"
-    myCursor.execute(sqlQuery)
-    author = myCursor.fetchall()
-    for authorInfo in author:
-        authorDescription = authorInfo[5]
-        authorImage = authorInfo[6]
-        authorDate = authorInfo[7]
-
+    authorBooksInfo = myCursor.fetchall()
     myCursor.close()
-    return render_template('authorBooks.html', books = books, authorDescription = authorDescription, authorImage = authorImage, authorDate = authorDate)
+
+    for authorInfo in authorBooksInfo:
+        authorImage = authorInfo[7]
+        authorDescription = authorInfo[8]
+        authorDate = authorInfo[9]
+
+    return render_template('authorBooks.html', authorBooksInfo = authorBooksInfo, authorImage = authorImage, authorDescription = authorDescription, authorDate = authorDate)
 
 @app.route("/requestBookInfo/", methods=['POST'])
 def requestBookInfo():
@@ -92,8 +91,8 @@ def userLogin():
         myCursor.close()
 
         if not user:
-            wrongCredentials = True
-            return redirect(url_for('adminLogin', wrongCredentials = wrongCredentials))
+            flash('Invalid user credentials.')
+            return redirect(url_for('adminLogin'))
 
     return redirect(url_for('adminPage'))
 

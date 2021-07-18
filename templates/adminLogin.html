@@ -4,15 +4,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/login.css">
+    <link rel="stylesheet" href="/static/global.css">
 </head>
 <body>
-    {% if wrongCredentials %}
-        <p>WRONG USER</p>
-    {% endif %}
     <div class="pageContainer" style="width: 464px; height: 540px;">
         <div class="containerElements">
             <p class="loginTitle">Member Login</p>
             <form action="{{ url_for('userLogin') }}" style="margin-top: 80px; text-align: center;" method="POST">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="warningMessage">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
                 <input type="text" name="userName" placeholder="User name" class="loginField" style="margin-bottom: 30px;"><br>
                 <input type="password" name="userPassword" placeholder="Password" class="loginField"><br>
                 <button type="submit" class="loginButton">Login</button>
