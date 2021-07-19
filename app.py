@@ -15,7 +15,7 @@ app.secret_key = "myKey"
 @app.route("/")
 def index():
     myCursor = mysql.connection.cursor()
-    sqlQuery = f"SELECT * FROM books WHERE IsActive = 1 AND IsClassicBook = 1"
+    sqlQuery = f"SELECT * FROM classicBooks"
     myCursor.execute(sqlQuery)
     classicBooks = myCursor.fetchall()
     myCursor.close()
@@ -85,29 +85,21 @@ def userLogin():
         password = request.form['userPassword']
         
         myCursor = mysql.connection.cursor()
-        sqlQuery = f"SELECT * FROM users WHERE UserName = '{name}' AND UserPassword = '{password}'"
-        myCursor.execute(sqlQuery)
-        user = myCursor.fetchall()
+        myCursor.execute("SELECT UserValidation (%s, %s)", (name, password))
+        functionResult = myCursor.fetchall()
         myCursor.close()
 
-        if not user:
-            flash('Invalid user credentials.')
+        for result in functionResult:
+            validCredentials = result[0]
+
+        if validCredentials == 0:
+            flash('The credentials are invalid or user does not exists.')
             return redirect(url_for('adminLogin'))
 
     return redirect(url_for('adminPage'))
 
 @app.route("/adminContent/<type>")
 def adminContent(type):
-    myCursor = mysql.connection.cursor()
-    sqlQuery = f"SELECT * FROM books WHERE Section = '{type}' AND IsActive = 1 AND IsBestBook = 1"
-    myCursor.execute(sqlQuery)
-    bestBooks = myCursor.fetchall()
-
-    sqlQuery = f"SELECT * FROM authors WHERE Section = '{type}' AND IsActive = 1"
-    myCursor.execute(sqlQuery)
-    authors = myCursor.fetchall()
-
-    myCursor.close()
     return render_template('adminContent.html', type = type)
 
 if __name__ == "__main__":
