@@ -9,7 +9,40 @@
     {% if type == 'insertUsers' %}
         <p>INSERT USERS</p>
     {% elif type == 'insertBooks' %}
-        <p>INSERT BOOKS</p>
+        <div class="pageContainer" style="width: 950px; margin-top: 50px;">
+            <div class="containerElements">
+                <form action="{{ url_for('userLogin') }}" style="margin-top: 80px; text-align: center;" method="POST">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel" style="margin-left: 38px;">Title:</label>
+                    <input type="text" name="bookTitle" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
+                    <label for="" class="inputLabel">Author:</label>
+                    <input type="text" name="bookAuthor" placeholder="" class="inputField"><br>
+                    <label for="" class="inputLabel" style="margin-left: 16px;">Section:</label>
+                    <input type="text" name="bookSection" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
+                    <label for="" class="inputLabel">Type:</label>
+                    <input type="text" name="bookType" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <label for="" class="inputLabel">Year:</label>
+                    <input type="text" name="bookYear" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
+                    <label for="" class="inputLabel">Download URL:</label>
+                    <input type="text" name="bookDownloadUrl" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <label for="" class="inputLabel">Best Book:</label>
+                    <input type="text" name="bestBook" placeholder="1 - Yes / 0 - No" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
+                    <label for="" class="inputLabel">Classic Book:</label>
+                    <input type="text" name="classicBook" placeholder="1 - Yes / 0 - No" class="inputField" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <label for="" class="inputLabel">Image:</label>
+                    <input type="file" name="bookImage" placeholder="" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <label for="" class="inputLabel">Description:</label>
+                    <textarea name="bookDescription" rows="4" cols="50" class="inputField"></textarea><br>
+                    <button type="submit" class="submitButton">Login</button>
+                </form>
+            </div>
+        </div>
     {% elif type == 'deactivateUsers' %}
         <p>DEACTIVATE USERS</p>
     {% elif type == 'deactivateBooks' %}

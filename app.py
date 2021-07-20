@@ -93,7 +93,7 @@ def userLogin():
             validCredentials = result[0]
 
         if validCredentials == 0:
-            flash('The credentials are invalid or user does not exists.')
+            flash('The credentials are invalid or user is not active.')
             return redirect(url_for('adminLogin'))
 
     return redirect(url_for('adminPage'))
