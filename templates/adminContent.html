@@ -4,14 +4,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/login.css">
+    <link rel="stylesheet" href="/static/global.css">
 </head>
 <body>
     {% if type == 'insertUsers' %}
-        <p>INSERT USERS</p>
-    {% elif type == 'insertBooks' %}
-        <div class="pageContainer" style="width: 950px; margin-top: 50px;">
+        <div class="pageContainer" style="width: 950px; margin-top: 25px;">
             <div class="containerElements">
-                <form action="{{ url_for('userLogin') }}" style="margin-top: 80px; text-align: center;" method="POST">
+                <p class="pageTitle">Add new user</p>
+                <form action="{{ url_for('submitNewUser') }}" style="margin-top: 50px; text-align: center;" method="POST">
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             {% for message in messages %}
@@ -19,27 +19,48 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
-                    <label for="" class="inputLabel" style="margin-left: 38px;">Title:</label>
-                    <input type="text" name="bookTitle" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
+                    <label for="" class="inputLabel">Username:</label>
+                    <input type="text" name="userName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;">
+                    <label for="" class="inputLabel">Password:</label>
+                    <input type="text" name="userPassword" placeholder="" class="inputField"><br>
+                    <button type="submit" class="submitButton">Add</button>
+                </form>
+            </div>
+        </div>
+    {% elif type == 'insertBooks' %}
+        <div class="pageContainer" style="width: 950px; margin-top: 25px;">
+            <div class="containerElements">
+                <p class="pageTitle">Add new book</p>
+                <form name="newBookInfo" action="{{ url_for('submitNewBook') }}" style="margin-top: 50px; text-align: center;" method="POST" onsubmit="getImagePath()">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel">Title:</label>
+                    <input type="text" name="bookTitle" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;">
                     <label for="" class="inputLabel">Author:</label>
                     <input type="text" name="bookAuthor" placeholder="" class="inputField"><br>
-                    <label for="" class="inputLabel" style="margin-left: 16px;">Section:</label>
-                    <input type="text" name="bookSection" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
+                    <label for="" class="inputLabel">Section:</label>
+                    <input type="text" name="bookSection" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;">
                     <label for="" class="inputLabel">Type:</label>
-                    <input type="text" name="bookType" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <input type="text" name="bookType" placeholder="" class="inputField"><br>
                     <label for="" class="inputLabel">Year:</label>
-                    <input type="text" name="bookYear" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
+                    <input type="text" name="bookYear" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;">
                     <label for="" class="inputLabel">Download URL:</label>
-                    <input type="text" name="bookDownloadUrl" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <input type="text" name="bookDownloadUrl" placeholder="" class="inputField"><br>
                     <label for="" class="inputLabel">Best Book:</label>
                     <input type="text" name="bestBook" placeholder="1 - Yes / 0 - No" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
                     <label for="" class="inputLabel">Classic Book:</label>
                     <input type="text" name="classicBook" placeholder="1 - Yes / 0 - No" class="inputField" style="margin-bottom: 30px; margin-right: 30px;"><br>
-                    <label for="" class="inputLabel">Image:</label>
+                    <label for="" class="inputLabel">Image: (Move image to static/images folder)</label>
                     <input type="file" name="bookImage" placeholder="" style="margin-bottom: 30px; margin-right: 30px;"><br>
-                    <label for="" class="inputLabel">Description:</label>
+                    <input type="hidden" name="bookImageSrc" value="">
+                    <label for="" class="inputLabel">Description:</label><br>
                     <textarea name="bookDescription" rows="4" cols="50" class="inputField"></textarea><br>
-                    <button type="submit" class="submitButton">Login</button>
+                    <button type="submit" class="submitButton">Add</button>
                 </form>
             </div>
         </div>
@@ -56,5 +77,13 @@
     {% else %}
         <p>LIST BOOKS</p>
     {% endif %}
+    <script>
+        function getImagePath() {
+            var Form = document.forms["newBookInfo"];
+            var inputName = Form.elements["bookImage"].value;
+
+            Form.elements["bookImageSrc"].value = inputName;
+        }
+    </script>
 </body>
 </html>
