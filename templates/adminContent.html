@@ -22,8 +22,8 @@
                     <label for="" class="inputLabel">Username:</label>
                     <input type="text" name="userName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;">
                     <label for="" class="inputLabel">Password:</label>
-                    <input type="text" name="userPassword" placeholder="" class="inputField"><br>
-                    <button type="submit" class="submitButton">Add</button>
+                    <input type="password" name="userPassword" placeholder="" class="inputField"><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 50px;">Add</button>
                 </form>
             </div>
         </div>
@@ -55,7 +55,7 @@
                     <input type="text" name="bestBook" placeholder="1 - Yes / 0 - No" class="inputField" style="margin-bottom: 30px; margin-right: 30px;">
                     <label for="" class="inputLabel">Classic Book:</label>
                     <input type="text" name="classicBook" placeholder="1 - Yes / 0 - No" class="inputField" style="margin-bottom: 30px; margin-right: 30px;"><br>
-                    <label for="" class="inputLabel">Image: (Move image to static/images folder)</label>
+                    <label for="" class="inputLabel">Image:</label>
                     <input type="file" name="bookImage" placeholder="" style="margin-bottom: 30px; margin-right: 30px;"><br>
                     <input type="hidden" name="bookImageSrc" value="">
                     <label for="" class="inputLabel">Description:</label><br>
@@ -64,18 +64,60 @@
                 </form>
             </div>
         </div>
+    {% elif type == 'insertAuthors' %}
+        <p>INSERT AUTHORS</p>
     {% elif type == 'deactivateUsers' %}
-        <p>DEACTIVATE USERS</p>
+        <div class="pageContainer" style="width: 950px; margin-top: 25px;">
+            <div class="containerElements">
+                <p class="pageTitle">Deactivate user</p>
+                <form action="{{ url_for('deactivateUser') }}" style="margin-top: 50px; text-align: center;" method="POST">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel">User name:</label>
+                    <input type="text" name="userName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 50px;">Deactivate</button>
+                </form>
+            </div>
+        </div>
     {% elif type == 'deactivateBooks' %}
-        <p>DEACTIVATE BOOKS</p>
+        <div class="pageContainer" style="width: 950px; margin-top: 25px;">
+            <div class="containerElements">
+                <p class="pageTitle">Deactivate book</p>
+                <form action="{{ url_for('deactivateBook') }}" style="margin-top: 50px; text-align: center;" method="POST">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel">Book title:</label>
+                    <input type="text" name="bookTitle" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 50px;">Deactivate</button>
+                </form>
+            </div>
+        </div>
+    {% elif type == 'deactivateAuthors' %}
+        <p>DEACTIVATE AUTHORS</p>
     {% elif type == 'updateUsers' %}
         <p>UPDATE USERS</p>
     {% elif type == 'updateBooks' %}
         <p>UPDATE BOOKS</p>
+    {% elif type == 'updateAuthors' %}
+        <p>UPDATE AUTHORS</p>
     {% elif type == 'listUsers' %}
         <p>LIST USERS</p>
-    {% else %}
+    {% elif type == 'listBooks' %}
         <p>LIST BOOKS</p>
+    {% elif type == 'listAuthors' %}
+        <p>LIST AUTHORS</p>
+    {% else %}
+        <p>LIST REQUESTS</p>
     {% endif %}
     <script>
         function getImagePath() {
