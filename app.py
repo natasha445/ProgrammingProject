@@ -21,7 +21,8 @@ def index():
     myCursor.execute(sqlQuery)
     classicBooks = myCursor.fetchall()
     myCursor.close()
-    return render_template('index.html', classicBooks = classicBooks)
+    #renderizar layout
+    return render_template('index.html', classicBooks = classicBooks) #menu = menu
 
 @app.route("/contact/")
 def contact():
@@ -128,6 +129,8 @@ def submitNewBook():
                 flash('The author does not exists on Data Base, the book was not added')
                 return redirect(url_for('adminContent', type = 'insertBooks'))
             else:
+                #validar que el autor elegido y la seccion coincidan con los datos del input (seccion)
+                #implementar el acortador de URL
                 myCursor = mysql.connection.cursor()
                 myCursor.execute("INSERT INTO books (Title, Author, Year, DownloadUrl, BookTooltip, BookSection, IsActive, Type, BookImage, IsBestBook, IsClassicBook)" +
                     " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (bookTitle, bookAuthor, bookYear, bookDownloadUrl, bookDescription, bookSection, 1, bookType, 
@@ -162,20 +165,28 @@ def submitNewUser():
 @app.route("/submitNewAuthor/", methods=['POST'])
 def submitNewAuthor():
     if request.method == "POST":
-        userName = request.form['userName']
-        userPassword = request.form['userPassword']
+        authorName = request.form['authorName']
+        authorSection = request.form['authorSection']
+        authorDate = request.form['authorDate']
+        authorImagePath = request.form['authorImageSrc']
+        authorDescription = request.form['authorDescription']
 
-        userExists = checkIfUserExists(userName)
+        authorImage = authorImagePath.split(os.sep)
+        authorImageSrc = '/static/images/' + authorImage[-1]
+        
+        authorExists = checkIfAuthorExists(authorName)
 
-        if userExists == 1:
-            flash('User already exists on Data Base')
-            return redirect(url_for('adminContent', type = 'insertUsers'))
+        if authorExists == 1:
+            flash('Author already exists on Data Base')
+            return redirect(url_for('adminContent', type = 'insertAuthors'))
         else:
             myCursor = mysql.connection.cursor()
-            myCursor.execute("INSERT INTO users (UserName, UserPassword, IsActive)" +
-            " VALUES (%s, %s, %s)", (userName, userPassword, 1))
+            myCursor.execute("INSERT INTO authors (Name, IsActive, Section, Description, AuthorImage, BirthDeathDate)" +
+                " VALUES (%s, %s, %s, %s, %s, %s)", (authorName, 1, authorSection, authorDescription, authorImageSrc, authorDate))
             mysql.connection.commit()
             myCursor.close()
+
+            moveAuthorImageToFolder(authorImage[-1])
 
     return redirect(url_for('adminPage'))
 
@@ -220,17 +231,17 @@ def deactivateUser():
 @app.route("/deactivateAuthor/", methods=['POST'])
 def deactivateAuthor():
     if request.method == "POST":
-        userName = request.form['userName']
+        authorName = request.form['authorName']
 
-        userExists = checkIfUserExists(userName)
+        authorExists = checkIfAuthorExists(authorName)
 
-        if userExists == 0:
-            flash('User does not exists on Data Base')
-            return redirect(url_for('adminContent', type = 'deactivateUsers'))
+        if authorExists == 0:
+            flash('Author does not exists on Data Base')
+            return redirect(url_for('adminContent', type = 'deactivateAuthors'))
         else:
             myCursor = mysql.connection.cursor()
-            sqlQuery = "UPDATE users SET IsActive = 0 WHERE UserName = %s"
-            myCursor.execute(sqlQuery, (userName,))
+            sqlQuery = "UPDATE authors SET IsActive = 0 WHERE Name = %s"
+            myCursor.execute(sqlQuery, (authorName,))
             mysql.connection.commit()
             myCursor.close()
 
@@ -240,58 +251,73 @@ def deactivateAuthor():
 def updateUser():
     if request.method == "POST":
         userName = request.form['userName']
-        userPassword = request.form['userName']
 
         userExists = checkIfUserExists(userName)
 
         if userExists == 0:
             flash('User does not exists on Data Base')
-            return redirect(url_for('adminContent', type = 'deactivateUsers'))
+            return redirect(url_for('adminContent', type = 'updateUsers'))
         else:
             myCursor = mysql.connection.cursor()
-            sqlQuery = "UPDATE users SET IsActive = 0 WHERE UserName = %s"
-            myCursor.execute(sqlQuery, (userName,))
-            mysql.connection.commit()
+            sqlQuery = f"SELECT * FROM usersView WHERE UserName = '{userName}'"
+            myCursor.execute(sqlQuery)
+            userInfo = myCursor.fetchall()
             myCursor.close()
+
+    return render_template('updateUserInfo.html', userInfo = userInfo, userName = userName)
+
+@app.route("/sendUpdatedUserInfo/<user>", methods=['POST'])
+def sendUpdatedUserInfo(user):
+    #validar que el nuevo nombre de usuario no coincida con uno que exista en la tabla
+    if request.method == "POST":
+        userName = request.form['userName']
+        userPassword = request.form['userPassword']
+        userActive = request.form['userActive']
+
+        myCursor = mysql.connection.cursor()
+        sqlQuery = "UPDATE users SET UserName = %s, userPassword = %s, IsActive = %s WHERE UserName = %s"
+        myCursor.execute(sqlQuery, (userName, userPassword, userActive, user))
+        mysql.connection.commit()
+        myCursor.close()
 
     return redirect(url_for('adminPage'))
 
-@app.route("/updateBook/", methods=['POST'])
+@app.route("/updateBook/", methods=['POST']) #TO DO
 def updateBook():
     if request.method == "POST":
         print("xcvx")
 
     return redirect(url_for('adminPage'))
 
-@app.route("/updateAuthor/", methods=['POST'])
+@app.route("/updateAuthor/", methods=['POST']) #TO DO
 def updateAuthor():
     if request.method == "POST":
         print("xcvx")
 
     return redirect(url_for('adminPage'))
 
-@app.route("/listAllUsers/", methods=['POST'])
+@app.route("/listAllUsers/", methods=['POST']) #TO DO
 def listAllUsers():
     if request.method == "POST":
         print("xcvx")
 
     return redirect(url_for('adminPage'))
 
-@app.route("/listAllBooks/", methods=['POST'])
+@app.route("/listAllBooks/", methods=['POST']) #TO DO
 def listAllBooks():
     if request.method == "POST":
         print("xcvx")
 
     return redirect(url_for('adminPage'))
 
-@app.route("/listAllAuthors/", methods=['POST'])
+@app.route("/listAllAuthors/", methods=['POST']) #TO DO
 def listAllAuthors():
     if request.method == "POST":
         print("xcvx")
 
     return redirect(url_for('adminPage'))
 
-@app.route("/listAllRequests/", methods=['POST'])
+@app.route("/listAllRequests/", methods=['POST']) #TO DO
 def listAllRequests():
     if request.method == "POST":
         print("xcvx")
@@ -300,7 +326,18 @@ def listAllRequests():
 
 @app.route("/adminContent/<type>")
 def adminContent(type):
-    return render_template('adminContent.html', type = type)
+    #SELECT DE TODAS LAS TABLAS (USER, BOOKS, AUTHORS Y REQUEST)
+    myCursor = mysql.connection.cursor()
+    sqlQuery = f"SELECT * FROM usersView"
+    myCursor.execute(sqlQuery)
+    userTableInfo = myCursor.fetchall()
+
+    sqlQuery = f"SELECT * FROM requestsView"
+    myCursor.execute(sqlQuery)
+    requestTableInfo = myCursor.fetchall()
+    myCursor.close()
+
+    return render_template('adminContent.html', type = type, usersTableInfo = userTableInfo, requestTableInfo = requestTableInfo)
 
 def checkIfBookExists(bookTitle):
     myCursor = mysql.connection.cursor()
@@ -338,6 +375,12 @@ def checkIfUserExists(userName):
 def moveBookCoverImageToFolder(file):
     source = 'C:/Users/Natasha.Mora/Downloads/' + file
     destination = 'C:/Users/Natasha.Mora/Documents/Repos/ProgrammingProject/static/images'
+
+    shutil.move(source, destination)
+
+def moveAuthorImageToFolder(file):
+    source = 'C:/Users/Natasha.Mora/Downloads/' + file
+    destination = 'C:/Users/Natasha.Mora/Documents/Repos/ProgrammingProject/static/images/authors'
 
     shutil.move(source, destination)
 

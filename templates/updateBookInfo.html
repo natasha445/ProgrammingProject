@@ -1,0 +1,36 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/login.css">
+    <link rel="stylesheet" href="/static/global.css">
+</head>
+<body>
+    <div class="pageContainer" style="width: 750px; height: 480px;">
+        <div class="containerElements" style="text-align: center;">
+            <table style="margin-bottom: 30px;">
+                <tr>
+                  <th>User Name</th>
+                  <th>User Password</th>
+                  <th>Is Active (Yes - 1 / No - 0)</th>
+                </tr>
+                <tr>
+                    {% for book in bookInfo %}
+                        <td>{{ user[0] }}</td>
+                        <td>{{ user[1] }}</td>
+                        <td>{{ user[2] }}</td>
+                    {% endfor %}
+                </tr>
+            </table><br>
+            <label for="" class="inputLabel">Username:</label>
+            <input type="text" name="userName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+            <label for="" class="inputLabel">Password:</label>
+            <input type="password" name="userPassword" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+            <label for="" class="inputLabel">Is Active:</label>
+            <input type="text" name="userActive" placeholder="" class="inputField" style="margin-right: 39px;"><br>
+            <button type="submit" class="submitButton" style="margin-bottom: 20px;">Update</button>
+        </div>
+    </div>
+</body>
+</html>

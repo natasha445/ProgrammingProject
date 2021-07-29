@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="/static/global.css">
 </head>
 <body>
-    {% if type == 'insertUsers' %}
-        <div class="pageContainer" style="width: 950px; margin-top: 25px;">
-            <div class="containerElements">
+    <div class="pageContainer" style="width: 950px; margin-top: 25px;">
+        <div class="containerElements">
+            {% if type == 'insertUsers' %}
                 <p class="pageTitle">Add new user</p>
                 <form action="{{ url_for('submitNewUser') }}" style="margin-top: 50px; text-align: center;" method="POST">
                     {% with messages = get_flashed_messages() %}
@@ -25,13 +25,9 @@
                     <input type="password" name="userPassword" placeholder="" class="inputField"><br>
                     <button type="submit" class="submitButton" style="margin-bottom: 50px;">Add</button>
                 </form>
-            </div>
-        </div>
-    {% elif type == 'insertBooks' %}
-        <div class="pageContainer" style="width: 950px; margin-top: 25px;">
-            <div class="containerElements">
+            {% elif type == 'insertBooks' %}
                 <p class="pageTitle">Add new book</p>
-                <form name="newBookInfo" action="{{ url_for('submitNewBook') }}" style="margin-top: 50px; text-align: center;" method="POST" onsubmit="getImagePath()">
+                <form name="newBookInfo" action="{{ url_for('submitNewBook') }}" style="margin-top: 50px; text-align: center;" method="POST" onsubmit="getBookImagePath()">
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             {% for message in messages %}
@@ -62,13 +58,30 @@
                     <textarea name="bookDescription" rows="4" cols="50" class="inputField"></textarea><br>
                     <button type="submit" class="submitButton">Add</button>
                 </form>
-            </div>
-        </div>
-    {% elif type == 'insertAuthors' %}
-        <p>INSERT AUTHORS</p>
-    {% elif type == 'deactivateUsers' %}
-        <div class="pageContainer" style="width: 950px; margin-top: 25px;">
-            <div class="containerElements">
+            {% elif type == 'insertAuthors' %}
+                <p class="pageTitle">Add new author</p>
+                <form name="newAuthorInfo" action="{{ url_for('submitNewAuthor') }}" style="margin-top: 50px; text-align: center;" method="POST" onsubmit="getAuthorImagePath()">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel">Author name:</label>
+                    <input type="text" name="authorName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;">
+                    <label for="" class="inputLabel">Section:</label>
+                    <input type="text" name="authorSection" placeholder="" class="inputField"><br>
+                    <label for="" class="inputLabel">Birth / Death date:</label>
+                    <input type="text" name="authorDate" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <label for="" class="inputLabel">Image:</label>
+                    <input type="file" name="authorImage" placeholder="" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <input type="hidden" name="authorImageSrc" value="">
+                    <label for="" class="inputLabel">Brief biography:</label><br>
+                    <textarea name="authorDescription" rows="4" cols="50" class="inputField"></textarea><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 50px;">Add</button>
+                </form>
+            {% elif type == 'deactivateUsers' %}
                 <p class="pageTitle">Deactivate user</p>
                 <form action="{{ url_for('deactivateUser') }}" style="margin-top: 50px; text-align: center;" method="POST">
                     {% with messages = get_flashed_messages() %}
@@ -82,11 +95,7 @@
                     <input type="text" name="userName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
                     <button type="submit" class="submitButton" style="margin-bottom: 50px;">Deactivate</button>
                 </form>
-            </div>
-        </div>
-    {% elif type == 'deactivateBooks' %}
-        <div class="pageContainer" style="width: 950px; margin-top: 25px;">
-            <div class="containerElements">
+            {% elif type == 'deactivateBooks' %}
                 <p class="pageTitle">Deactivate book</p>
                 <form action="{{ url_for('deactivateBook') }}" style="margin-top: 50px; text-align: center;" method="POST">
                     {% with messages = get_flashed_messages() %}
@@ -100,31 +109,92 @@
                     <input type="text" name="bookTitle" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
                     <button type="submit" class="submitButton" style="margin-bottom: 50px;">Deactivate</button>
                 </form>
-            </div>
+            {% elif type == 'deactivateAuthors' %}
+                <p class="pageTitle">Deactivate author</p>
+                <form action="{{ url_for('deactivateAuthor') }}" style="margin-top: 50px; text-align: center;" method="POST">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel">Author name:</label>
+                    <input type="text" name="authorName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 50px;">Deactivate</button>
+                </form>
+            {% elif type == 'updateUsers' %}
+                <p class="pageTitle" style="margin-bottom: 50px;">Update user</p>
+                <form action="{{ url_for('updateUser') }}" style="margin-top: 50px; text-align: center;" method="POST">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel">User name:</label>
+                    <input type="text" name="userName" placeholder="" class="inputField" style="margin-bottom: 10px; margin-right: 50px;"><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 50px;">Search</button>
+                </form>
+            {% elif type == 'updateBooks' %}
+                <p>UPDATE BOOKS</p>
+            {% elif type == 'updateAuthors' %}
+                <p>UPDATE AUTHORS</p>
+            {% elif type == 'listUsers' %}
+                <table style="margin-bottom: 30px;">
+                    <tr>
+                        <th>User Name</th>
+                        <th>User Password</th>
+                        <th>Is Active (Yes - 1 / No - 0)</th>
+                    </tr>
+                    {% for user in usersTableInfo %}
+                        <tr>
+                            <td>{{ user[0] }}</td>
+                            <td>{{ user[1] }}</td>
+                            <td>{{ user[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% elif type == 'listBooks' %}
+                <p>LIST BOOKS</p>
+            {% elif type == 'listAuthors' %}
+                <p>LIST AUTHORS</p>
+            {% else %}
+                <table style="margin-bottom: 30px;">
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Author</th>
+                        <th>Request Email</th>
+                        <th>Request Name</th>
+                    </tr>
+                    {% for request in requestTableInfo %}
+                        <tr>
+                            <td>{{ request[0] }}</td>
+                            <td>{{ request[1] }}</td>
+                            <td>{{ request[2] }}</td>
+                            <td>{{ request[3] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
         </div>
-    {% elif type == 'deactivateAuthors' %}
-        <p>DEACTIVATE AUTHORS</p>
-    {% elif type == 'updateUsers' %}
-        <p>UPDATE USERS</p>
-    {% elif type == 'updateBooks' %}
-        <p>UPDATE BOOKS</p>
-    {% elif type == 'updateAuthors' %}
-        <p>UPDATE AUTHORS</p>
-    {% elif type == 'listUsers' %}
-        <p>LIST USERS</p>
-    {% elif type == 'listBooks' %}
-        <p>LIST BOOKS</p>
-    {% elif type == 'listAuthors' %}
-        <p>LIST AUTHORS</p>
-    {% else %}
-        <p>LIST REQUESTS</p>
-    {% endif %}
+    </div>
     <script>
-        function getImagePath() {
+        function getBookImagePath() {
             var Form = document.forms["newBookInfo"];
             var inputName = Form.elements["bookImage"].value;
 
             Form.elements["bookImageSrc"].value = inputName;
+        }
+        function getAuthorImagePath() {
+            var Form = document.forms["newAuthorInfo"];
+            var inputName = Form.elements["authorImage"].value;
+
+            Form.elements["authorImageSrc"].value = inputName;
+        }
+        function getUserInfo() {
+
         }
     </script>
 </body>
