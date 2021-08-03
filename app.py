@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_mysqldb import MySQL
 import os
 import shutil
+import requests
 
 app = Flask(__name__)
 
@@ -13,6 +14,7 @@ app.config['MYSQL_DB'] = 'bookstore'
 mysql = MySQL(app)
 
 app.secret_key = "myKey"
+api_key = "fa3f1a75c3e633cf866dbab5b028542f5fbd9"
 
 @app.route("/")
 def index():
@@ -115,25 +117,41 @@ def submitNewBook():
         bookImagePath = request.form['bookImageSrc']
         bookDescription = request.form['bookDescription']
 
+        if isBestBook < 0 or isBestBook > 1:
+            flash('The best book field only accepts 0 or 1')
+            return redirect(url_for('adminContent', type = 'insertBooks'))
+
+        if isClassicBook < 0 or isClassicBook > 1:
+            flash('The classic book field only accepts 0 or 1')
+            return redirect(url_for('adminContent', type = 'insertBooks'))
+
         bookImage = bookImagePath.split(os.sep)
         bookImageSrc = '/static/images/' + bookImage[-1]
         
-        bookExists = checkIfBookExists(bookTitle)
+        bookDuplicate = checkBookDuplicate(bookTitle)
         authorExists = checkIfAuthorExists(bookAuthor)
 
-        if bookExists == 1:
+        if bookDuplicate == 1:
             flash('Book already exists on Data Base')
             return redirect(url_for('adminContent', type = 'insertBooks'))
         else:
             if authorExists == 0:
-                flash('The author does not exists on Data Base, the book was not added')
+                flash('The author does not exists or is inactive, the book was not added')
                 return redirect(url_for('adminContent', type = 'insertBooks'))
             else:
-                #validar que el autor elegido y la seccion coincidan con los datos del input (seccion)
-                #implementar el acortador de URL
                 myCursor = mysql.connection.cursor()
+                validatedAuthorSection = validateAuthorSection(bookAuthor, bookSection)
+
+                if validatedAuthorSection == 0:
+                    flash('The book section does not coincide with the author section, the book was not added')
+                    return redirect(url_for('adminContent', type = 'insertBooks'))
+
+                apiUrl = f"https://cutt.ly/api/api.php?key={api_key}&short={bookDownloadUrl}"
+                data = requests.get(apiUrl).json()["url"]
+                shortenedUrl = data["shortLink"]
+
                 myCursor.execute("INSERT INTO books (Title, Author, Year, DownloadUrl, BookTooltip, BookSection, IsActive, Type, BookImage, IsBestBook, IsClassicBook)" +
-                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (bookTitle, bookAuthor, bookYear, bookDownloadUrl, bookDescription, bookSection, 1, bookType, 
+                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (bookTitle, bookAuthor, bookYear, shortenedUrl, bookDescription, bookSection, 1, bookType, 
                     bookImageSrc, isBestBook, isClassicBook))
                 mysql.connection.commit()
                 myCursor.close()
@@ -148,9 +166,9 @@ def submitNewUser():
         userName = request.form['userName']
         userPassword = request.form['userPassword']
 
-        userExists = checkIfUserExists(userName)
+        userDuplicate = checkUserDuplicate(userName)
 
-        if userExists == 1:
+        if userDuplicate == 1:
             flash('User already exists on Data Base')
             return redirect(url_for('adminContent', type = 'insertUsers'))
         else:
@@ -172,14 +190,18 @@ def submitNewAuthor():
         authorDescription = request.form['authorDescription']
 
         authorImage = authorImagePath.split(os.sep)
-        authorImageSrc = '/static/images/' + authorImage[-1]
+        authorImageSrc = '/static/images/authors/' + authorImage[-1]
         
-        authorExists = checkIfAuthorExists(authorName)
+        authorDuplicate = checkAuthorDuplicate(authorName)
 
-        if authorExists == 1:
+        if authorDuplicate == 1:
             flash('Author already exists on Data Base')
             return redirect(url_for('adminContent', type = 'insertAuthors'))
         else:
+            if authorSection != "Philosophy" and authorSection != "Science Fiction" and authorSection != "Novels":
+                flash('The author section must be philosophy, novels or science fiction')
+                return redirect(url_for('adminContent', type = 'insertAuthors'))
+
             myCursor = mysql.connection.cursor()
             myCursor.execute("INSERT INTO authors (Name, IsActive, Section, Description, AuthorImage, BirthDeathDate)" +
                 " VALUES (%s, %s, %s, %s, %s, %s)", (authorName, 1, authorSection, authorDescription, authorImageSrc, authorDate))
@@ -198,7 +220,7 @@ def deactivateBook():
         bookExists = checkIfBookExists(bookTitle)
 
         if bookExists == 0:
-            flash('Book does not exists on Data Base')
+            flash('Book does not exists or is not active')
             return redirect(url_for('adminContent', type = 'deactivateBooks'))
         else:
             myCursor = mysql.connection.cursor()
@@ -217,7 +239,7 @@ def deactivateUser():
         userExists = checkIfUserExists(userName)
 
         if userExists == 0:
-            flash('User does not exists on Data Base')
+            flash('User does not exists or is not active')
             return redirect(url_for('adminContent', type = 'deactivateUsers'))
         else:
             myCursor = mysql.connection.cursor()
@@ -236,7 +258,7 @@ def deactivateAuthor():
         authorExists = checkIfAuthorExists(authorName)
 
         if authorExists == 0:
-            flash('Author does not exists on Data Base')
+            flash('Author does not exists or is not active')
             return redirect(url_for('adminContent', type = 'deactivateAuthors'))
         else:
             myCursor = mysql.connection.cursor()
@@ -252,23 +274,20 @@ def updateUser():
     if request.method == "POST":
         userName = request.form['userName']
 
-        userExists = checkIfUserExists(userName)
+        myCursor = mysql.connection.cursor()
+        sqlQuery = f"SELECT * FROM usersUpdateView WHERE UserName = '{userName}'" #muestra los campos especificos
+        myCursor.execute(sqlQuery)
+        userInfo = myCursor.fetchall()
+        myCursor.close()
 
-        if userExists == 0:
-            flash('User does not exists on Data Base')
+        if not userInfo:
+            flash("User does not exists on Data Base, it cannot be updated")
             return redirect(url_for('adminContent', type = 'updateUsers'))
-        else:
-            myCursor = mysql.connection.cursor()
-            sqlQuery = f"SELECT * FROM usersView WHERE UserName = '{userName}'"
-            myCursor.execute(sqlQuery)
-            userInfo = myCursor.fetchall()
-            myCursor.close()
 
     return render_template('updateUserInfo.html', userInfo = userInfo, userName = userName)
 
 @app.route("/sendUpdatedUserInfo/<user>", methods=['POST'])
 def sendUpdatedUserInfo(user):
-    #validar que el nuevo nombre de usuario no coincida con uno que exista en la tabla
     if request.method == "POST":
         userName = request.form['userName']
         userPassword = request.form['userPassword']
@@ -296,48 +315,28 @@ def updateAuthor():
 
     return redirect(url_for('adminPage'))
 
-@app.route("/listAllUsers/", methods=['POST']) #TO DO
-def listAllUsers():
-    if request.method == "POST":
-        print("xcvx")
-
-    return redirect(url_for('adminPage'))
-
-@app.route("/listAllBooks/", methods=['POST']) #TO DO
-def listAllBooks():
-    if request.method == "POST":
-        print("xcvx")
-
-    return redirect(url_for('adminPage'))
-
-@app.route("/listAllAuthors/", methods=['POST']) #TO DO
-def listAllAuthors():
-    if request.method == "POST":
-        print("xcvx")
-
-    return redirect(url_for('adminPage'))
-
-@app.route("/listAllRequests/", methods=['POST']) #TO DO
-def listAllRequests():
-    if request.method == "POST":
-        print("xcvx")
-
-    return redirect(url_for('adminPage'))
-
 @app.route("/adminContent/<type>")
 def adminContent(type):
-    #SELECT DE TODAS LAS TABLAS (USER, BOOKS, AUTHORS Y REQUEST)
     myCursor = mysql.connection.cursor()
     sqlQuery = f"SELECT * FROM usersView"
     myCursor.execute(sqlQuery)
     userTableInfo = myCursor.fetchall()
+
+    sqlQuery = f"SELECT * FROM booksView"
+    myCursor.execute(sqlQuery)
+    booksTableInfo = myCursor.fetchall()
+
+    sqlQuery = f"SELECT * FROM authorsView"
+    myCursor.execute(sqlQuery)
+    authorsTableInfo = myCursor.fetchall()
 
     sqlQuery = f"SELECT * FROM requestsView"
     myCursor.execute(sqlQuery)
     requestTableInfo = myCursor.fetchall()
     myCursor.close()
 
-    return render_template('adminContent.html', type = type, usersTableInfo = userTableInfo, requestTableInfo = requestTableInfo)
+    return render_template('adminContent.html', type = type, usersTableInfo = userTableInfo, requestTableInfo = requestTableInfo,
+    booksTableInfo = booksTableInfo, authorsTableInfo = authorsTableInfo)
 
 def checkIfBookExists(bookTitle):
     myCursor = mysql.connection.cursor()
@@ -349,6 +348,39 @@ def checkIfBookExists(bookTitle):
 
     myCursor.close()
     return bookExists
+
+def checkBookDuplicate(bookTitle):
+    myCursor = mysql.connection.cursor()
+    myCursor.execute("SELECT BookDuplicate (%s)", (bookTitle,))
+    functionResult = myCursor.fetchall()
+
+    for result in functionResult:
+        bookDuplicate = result[0]
+
+    myCursor.close()
+    return bookDuplicate
+
+def checkAuthorDuplicate(authorName):
+    myCursor = mysql.connection.cursor()
+    myCursor.execute("SELECT AuthorDuplicate (%s)", (authorName,))
+    functionResult = myCursor.fetchall()
+
+    for result in functionResult:
+        authorDuplicate = result[0]
+
+    myCursor.close()
+    return authorDuplicate
+
+def checkUserDuplicate(userName):
+    myCursor = mysql.connection.cursor()
+    myCursor.execute("SELECT UserDuplicate (%s)", (userName,))
+    functionResult = myCursor.fetchall()
+
+    for result in functionResult:
+        userDuplicate = result[0]
+
+    myCursor.close()
+    return userDuplicate
 
 def checkIfAuthorExists(authorName):
     myCursor = mysql.connection.cursor()
@@ -371,6 +403,17 @@ def checkIfUserExists(userName):
 
     myCursor.close()
     return userExists
+
+def validateAuthorSection(authorName, section):
+    myCursor = mysql.connection.cursor()
+    myCursor.execute("SELECT AuthorSectionValidation (%s, %s)", (authorName, section))
+    functionResult = myCursor.fetchall()
+
+    for result in functionResult:
+        validatedAuthorSection = result[0]
+
+    myCursor.close()
+    return validatedAuthorSection
 
 def moveBookCoverImageToFolder(file):
     source = 'C:/Users/Natasha.Mora/Downloads/' + file

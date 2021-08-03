@@ -13,13 +13,17 @@
                 <tr>
                   <th>User Name</th>
                   <th>User Password</th>
-                  <th>Is Active (Yes - 1 / No - 0)</th>
+                  <th>Is Active</th>
                 </tr>
                 <tr>
                     {% for user in userInfo %}
                         <td>{{ user[0] }}</td>
                         <td>{{ user[1] }}</td>
-                        <td>{{ user[2] }}</td>
+                        {% if user[2] == 0 %}
+                            <td>No</td>
+                        {% else %}
+                            <td>Yes</td>
+                        {% endif %}
                     {% endfor %}
                 </tr>
             </table><br>

@@ -146,20 +146,70 @@
                     <tr>
                         <th>User Name</th>
                         <th>User Password</th>
-                        <th>Is Active (Yes - 1 / No - 0)</th>
                     </tr>
                     {% for user in usersTableInfo %}
                         <tr>
                             <td>{{ user[0] }}</td>
                             <td>{{ user[1] }}</td>
-                            <td>{{ user[2] }}</td>
                         </tr>
                     {% endfor %}
                 </table>
             {% elif type == 'listBooks' %}
-                <p>LIST BOOKS</p>
+                <table style="margin-bottom: 30px; font-size: 12px;">
+                    <tr>
+                        <th>Author</th>
+                        <th>Book Cover</th>
+                        <th>Section</th>
+                        <th>Brief Description</th>
+                        <th>Download URL</th>
+                        <th>Is On Best Section</th>
+                        <th>Is On Classic Section</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Year</th>
+                    </tr>
+                    {% for book in booksTableInfo %}
+                        <tr>
+                            <td>{{ book[0] }}</td>
+                            <td><img src="{{ book[1] }}" style="width: 50px;" alt=""></td>
+                            <td>{{ book[2] }}</td>
+                            <td>{{ book[3] }}</td>
+                            <td><a href="{{ book[4] }}" target="_blank">{{ book[4] }}</a></td>
+                            {% if book[5] == 0 %}
+                                <td>No</td>
+                            {% else %}
+                                <td>Yes</td>
+                            {% endif %}
+                            {% if book[6] == 0 %}
+                                <td>No</td>
+                            {% else %}
+                                <td>Yes</td>
+                            {% endif %}
+                            <td style="font-weight: bold;">{{ book[7] }}</td>
+                            <td>{{ book[8] }}</td>
+                            <td>{{ book[9] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
             {% elif type == 'listAuthors' %}
-                <p>LIST AUTHORS</p>
+                <table style="margin-bottom: 30px; font-size: 16px;">
+                    <tr>
+                        <th>Author Image</th>
+                        <th>Birth / Death Date</th>
+                        <th>Brief Description</th>
+                        <th>Name</th>
+                        <th>Section</th>
+                    </tr>
+                    {% for author in authorsTableInfo %}
+                        <tr>
+                            <td><img src="{{ author[0] }}" style="width: 50px;" alt=""></td>
+                            <td>{{ author[1] }}</td>
+                            <td>{{ author[2] }}</td>
+                            <td style="font-weight: bold;">{{ author[3] }}</td>
+                            <td>{{ author[4] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
             {% else %}
                 <table style="margin-bottom: 30px;">
                     <tr>
@@ -178,6 +228,12 @@
                     {% endfor %}
                 </table>
             {% endif %}
+            <a style="text-decoration:none;" href="{{ url_for('adminPage') }}">
+                <img src="/static/images/icons/home.png" style="width: 100px; margin-left: 780px;" 
+                onmouseover="this.src='/static/images/icons/home-hover.png'"
+                onmouseout="this.src='/static/images/icons/home.png'"></a>
+                <p class="buttonName" style="display: inline-block; margin-left: 785px; font-size: 20px;">
+                    Main page</p>
         </div>
     </div>
     <script>
@@ -187,14 +243,12 @@
 
             Form.elements["bookImageSrc"].value = inputName;
         }
+
         function getAuthorImagePath() {
             var Form = document.forms["newAuthorInfo"];
             var inputName = Form.elements["authorImage"].value;
 
             Form.elements["authorImageSrc"].value = inputName;
-        }
-        function getUserInfo() {
-
         }
     </script>
 </body>
