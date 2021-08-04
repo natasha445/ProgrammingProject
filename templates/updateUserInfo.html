@@ -28,13 +28,15 @@
                 </tr>
             </table><br>
             <form action="/sendUpdatedUserInfo/{{ userName }}" style="text-align: center;" method="POST">
-                <label for="" class="inputLabel">Username:</label>
-                <input type="text" name="userName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
-                <label for="" class="inputLabel">Password:</label>
-                <input type="password" name="userPassword" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
-                <label for="" class="inputLabel">Is Active:</label>
-                <input type="text" name="userActive" placeholder="" class="inputField" style="margin-right: 39px;"><br>
-                <button type="submit" class="submitButton" style="margin-bottom: 20px;">Update</button>
+                {% for user in userInfo %}
+                    <label for="" class="inputLabel">Username:</label>
+                    <input type="text" name="userName" value="{{ user[0] }}" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+                    <label for="" class="inputLabel">Password:</label>
+                    <input type="password" name="userPassword" value="{{ user[1] }}" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+                    <label for="" class="inputLabel">Is Active:</label>
+                    <input type="text" name="userActive" value="{{ user[2] }}" class="inputField" style="margin-right: 39px;"><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 20px;">Update</button>
+                {% endfor %}
             </form>
         </div>
     </div>

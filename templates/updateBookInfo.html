@@ -7,30 +7,92 @@
     <link rel="stylesheet" href="/static/global.css">
 </head>
 <body>
-    <div class="pageContainer" style="width: 750px; height: 480px;">
+    <div class="pageContainer" style="width: 1200px; height: 880px;">
         <div class="containerElements" style="text-align: center;">
             <table style="margin-bottom: 30px;">
                 <tr>
-                  <th>User Name</th>
-                  <th>User Password</th>
-                  <th>Is Active (Yes - 1 / No - 0)</th>
+                  <th>Title</th>
+                  <th>Author</th>
+                  <th>Year</th>
+                  <th>DownloadUrl</th>
+                  <th>Brief Description</th>
+                  <th>Section</th>
+                  <th>Is Active</th>
+                  <th>Type</th>
+                  <th>Image</th>
+                  <th>Is Best Book</th>
+                  <th>Is Classic Book</th>
                 </tr>
                 <tr>
                     {% for book in bookInfo %}
-                        <td>{{ user[0] }}</td>
-                        <td>{{ user[1] }}</td>
-                        <td>{{ user[2] }}</td>
+                        <td>{{ book[0] }}</td>
+                        <td>{{ book[1] }}</td>
+                        <td>{{ book[2] }}</td>
+                        <td><a href="{{ book[3] }}" target="_blank">{{ book[3] }}</a></td>
+                        <td>{{ book[4] }}</td>
+                        <td>{{ book[5] }}</td>
+                        {% if book[6] == 0 %}
+                            <td>No</td>
+                        {% else %}
+                            <td>Yes</td>
+                        {% endif %}
+                        <td>{{ book[7] }}</td>
+                        <td><img src="{{ book[8] }}" style="width: 50px;" alt=""></td>
+                        {% if book[9] == 0 %}
+                            <td>No</td>
+                        {% else %}
+                            <td>Yes</td>
+                        {% endif %}
+                        {% if book[10] == 0 %}
+                            <td>No</td>
+                        {% else %}
+                            <td>Yes</td>
+                        {% endif %}
                     {% endfor %}
                 </tr>
             </table><br>
-            <label for="" class="inputLabel">Username:</label>
-            <input type="text" name="userName" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
-            <label for="" class="inputLabel">Password:</label>
-            <input type="password" name="userPassword" placeholder="" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
-            <label for="" class="inputLabel">Is Active:</label>
-            <input type="text" name="userActive" placeholder="" class="inputField" style="margin-right: 39px;"><br>
-            <button type="submit" class="submitButton" style="margin-bottom: 20px;">Update</button>
+            <form name="updatedBookInfo" action="/sendUpdatedBookInfo/{{ bookTitle }}" style="text-align: center;" method="POST" onsubmit="getBookImagePath()">
+                {% for book in bookInfo %}
+                    <label for="" class="inputLabel">Title:</label>
+                    <input type="text" name="bookTitle" value="{{ book[0] }}" class="inputField" style="margin-right: 50px;">
+                    <label for="" class="inputLabel">Author:</label>
+                    <input type="text" name="bookAuthor" value="{{ book[1] }}" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+                    <label for="" class="inputLabel">Year:</label>
+                    <input type="text" name="bookYear" value="{{ book[2] }}" class="inputField" style="margin-right: 50px;">
+                    <label for="" class="inputLabel">Type:</label>
+                    <input type="text" name="bookType" value="{{ book[7] }}" class="inputField" style="margin-bottom: 30px; margin-right: 39px;"><br>
+                    <label for="" class="inputLabel">Section:</label>
+                    <input type="text" name="bookSection" value="{{ book[5] }}" class="inputField" style="margin-bottom: 30px; margin-right: 39px;">
+                    <label for="" class="inputLabel">Is Active:</label>
+                    <input type="text" name="activeBook" value="{{ book[6] }}" class="inputField" style="margin-bottom: 30px; margin-right: 39px;"><br>
+                    <label for="" class="inputLabel">Is Best Book:</label>
+                    <input type="text" name="bestBook" value="{{ book[9] }}" class="inputField" style="margin-bottom: 30px; margin-right: 39px;">
+                    <label for="" class="inputLabel">Is Classic Book:</label>
+                    <input type="text" name="classicBook" value="{{ book[10] }}" class="inputField" style="margin-bottom: 30px; margin-right: 39px;"><br>
+                    <label for="" class="inputLabel">Download URL:</label>
+                    <input type="text" name="bookDownloadUrl" value="{{ book[3] }}" class="inputField" style="margin-bottom: 30px; margin-right: 39px;"><br>
+                    <input type="hidden" name="bookOldImageSrc" value="{{ book[8] }}">
+                    <label for="" class="inputLabel">Image:</label>
+                    <input type="file" name="bookImage" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <input type="hidden" name="bookNewImageSrc" value="">
+                    <label for="" class="inputLabel">Description:</label><br>
+                    <textarea name="bookDescription" rows="4" cols="50">{{ book[4] }}</textarea><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 20px;">Update</button>
+                {% endfor %}
+            </form>
         </div>
     </div>
+    <script>
+        function getBookImagePath() {
+            var Form = document.forms["updatedBookInfo"];
+            var inputName = Form.elements["bookImage"].value;
+
+            if (inputName != "") {
+                Form.elements["bookNewImageSrc"].value = inputName;
+            } else {
+                Form.elements["bookNewImageSrc"].value = "";
+            }
+        }
+    </script>
 </body>
 </html>

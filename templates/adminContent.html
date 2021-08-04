@@ -55,7 +55,7 @@
                     <input type="file" name="bookImage" placeholder="" style="margin-bottom: 30px; margin-right: 30px;"><br>
                     <input type="hidden" name="bookImageSrc" value="">
                     <label for="" class="inputLabel">Description:</label><br>
-                    <textarea name="bookDescription" rows="4" cols="50" class="inputField"></textarea><br>
+                    <textarea name="bookDescription" rows="4" cols="50"></textarea><br>
                     <button type="submit" class="submitButton">Add</button>
                 </form>
             {% elif type == 'insertAuthors' %}
@@ -78,7 +78,7 @@
                     <input type="file" name="authorImage" placeholder="" style="margin-bottom: 30px; margin-right: 30px;"><br>
                     <input type="hidden" name="authorImageSrc" value="">
                     <label for="" class="inputLabel">Brief biography:</label><br>
-                    <textarea name="authorDescription" rows="4" cols="50" class="inputField"></textarea><br>
+                    <textarea name="authorDescription" rows="4" cols="50"></textarea><br>
                     <button type="submit" class="submitButton" style="margin-bottom: 50px;">Add</button>
                 </form>
             {% elif type == 'deactivateUsers' %}
@@ -138,9 +138,33 @@
                     <button type="submit" class="submitButton" style="margin-bottom: 50px;">Search</button>
                 </form>
             {% elif type == 'updateBooks' %}
-                <p>UPDATE BOOKS</p>
+                <p class="pageTitle" style="margin-bottom: 50px;">Update book</p>
+                <form action="{{ url_for('updateBook') }}" style="margin-top: 50px; text-align: center;" method="POST">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel">Book title:</label>
+                    <input type="text" name="bookTitle" placeholder="" class="inputField" style="margin-bottom: 10px; margin-right: 50px;"><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 50px;">Search</button>
+                </form>
             {% elif type == 'updateAuthors' %}
-                <p>UPDATE AUTHORS</p>
+                <p class="pageTitle" style="margin-bottom: 50px;">Update author</p>
+                <form action="{{ url_for('updateAuthor') }}" style="margin-top: 50px; text-align: center;" method="POST">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="warningMessage">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <label for="" class="inputLabel">Author name:</label>
+                    <input type="text" name="authorName" class="inputField" style="margin-bottom: 10px; margin-right: 50px;"><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 50px;">Search</button>
+                </form>
             {% elif type == 'listUsers' %}
                 <table style="margin-bottom: 30px;">
                     <tr>

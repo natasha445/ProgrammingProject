@@ -1,0 +1,70 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/login.css">
+    <link rel="stylesheet" href="/static/global.css">
+</head>
+<body>
+    <div class="pageContainer" style="width: 850px; height: 740px;">
+        <div class="containerElements" style="text-align: center;">
+            <table style="margin-bottom: 30px;">
+                <tr>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Birth - Death</th>
+                  <th>Description</th>
+                  <th>Is Active</th>
+                  <th>Section</th>
+                </tr>
+                <tr>
+                    {% for author in authorInfo %}
+                        <td><img src="{{ author[0] }}" style="width: 50px;" alt=""></td>
+                        <td>{{ author[1] }}</td>
+                        <td>{{ author[2] }}</td>
+                        <td>{{ author[3] }}</td>
+                        {% if author[4] == 0 %}
+                            <td>No</td>
+                        {% else %}
+                            <td>Yes</td>
+                        {% endif %}
+                        <td>{{ author[5] }}</td>
+                    {% endfor %}
+                </tr>
+            </table><br>
+            <form name="updatedAuthorInfo" action="/sendUpdatedAuthorInfo/{{ authorName }}" style="text-align: center;" method="POST" onsubmit="getAuthorImagePath()">
+                {% for author in authorInfo %}
+                    <label for="" class="inputLabel">Name:</label>
+                    <input type="text" name="authorName" value="{{ author[1] }}" class="inputField" style="margin-right: 50px;">
+                    <label for="" class="inputLabel">Section:</label>
+                    <input type="text" name="authorSection" value="{{ author[5] }}" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+                    <label for="" class="inputLabel">Birth Death Date:</label>
+                    <input type="text" name="birthDeathDate" value="{{ author[2] }}" class="inputField" style="margin-bottom: 30px; margin-right: 50px;"><br>
+                    <label for="" class="inputLabel">Is Active:</label>
+                    <input type="text" name="authorActive" value="{{ author[4] }}" class="inputField" style="margin-bottom: 30px; margin-right: 39px;"><br>
+                    <input type="hidden" name="authorOldImageSrc" value="{{ author[0] }}">
+                    <label for="" class="inputLabel">Image:</label>
+                    <input type="file" name="authorImage" style="margin-bottom: 30px; margin-right: 30px;"><br>
+                    <input type="hidden" name="authorNewImageSrc" value="">
+                    <label for="" class="inputLabel">Description:</label><br>
+                    <textarea name="authorDescription" rows="4" cols="50">{{ author[3] }}</textarea><br>
+                    <button type="submit" class="submitButton" style="margin-bottom: 20px;">Update</button>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+    <script>
+        function getAuthorImagePath() {
+            var Form = document.forms["updatedAuthorInfo"];
+            var inputName = Form.elements["authorImage"].value;
+
+            if (inputName != "") {
+                Form.elements["authorNewImageSrc"].value = inputName;
+            } else {
+                Form.elements["authorNewImageSrc"].value = "";
+            }
+        }
+    </script>
+</body>
+</html>

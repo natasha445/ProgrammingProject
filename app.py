@@ -117,14 +117,6 @@ def submitNewBook():
         bookImagePath = request.form['bookImageSrc']
         bookDescription = request.form['bookDescription']
 
-        if isBestBook < 0 or isBestBook > 1:
-            flash('The best book field only accepts 0 or 1')
-            return redirect(url_for('adminContent', type = 'insertBooks'))
-
-        if isClassicBook < 0 or isClassicBook > 1:
-            flash('The classic book field only accepts 0 or 1')
-            return redirect(url_for('adminContent', type = 'insertBooks'))
-
         bookImage = bookImagePath.split(os.sep)
         bookImageSrc = '/static/images/' + bookImage[-1]
         
@@ -190,7 +182,7 @@ def submitNewAuthor():
         authorDescription = request.form['authorDescription']
 
         authorImage = authorImagePath.split(os.sep)
-        authorImageSrc = '/static/images/authors/' + authorImage[-1]
+        authorImageSrc = '/static/authors' + authorImage[-1]
         
         authorDuplicate = checkAuthorDuplicate(authorName)
 
@@ -301,17 +293,101 @@ def sendUpdatedUserInfo(user):
 
     return redirect(url_for('adminPage'))
 
-@app.route("/updateBook/", methods=['POST']) #TO DO
+@app.route("/updateBook/", methods=['POST'])
 def updateBook():
     if request.method == "POST":
-        print("xcvx")
+        bookTitle = request.form['bookTitle']
 
+        myCursor = mysql.connection.cursor()
+        sqlQuery = f"SELECT * FROM booksUpdateView WHERE Title = '{bookTitle}'"
+        myCursor.execute(sqlQuery)
+        bookInfo = myCursor.fetchall()
+        myCursor.close()
+
+        if not bookInfo:
+            flash("Book does not exists on Data Base, it cannot be updated")
+            return redirect(url_for('adminContent', type = 'updateBooks'))
+
+    return render_template('updateBookInfo.html', bookInfo = bookInfo, bookTitle = bookTitle)
+
+@app.route("/sendUpdatedBookInfo/<title>", methods=['POST'])
+def sendUpdatedBookInfo(title):
+    if request.method == "POST":
+        bookTitle = request.form['bookTitle']
+        bookAuthor = request.form['bookAuthor']
+        bookYear = request.form['bookYear']
+        bookType = request.form['bookType']
+        bookSection = request.form['bookSection']
+        activeBook = int(request.form['activeBook'])
+        bestBook = int(request.form['bestBook'])
+        classicBook = int(request.form['classicBook'])
+        bookDownloadUrl = request.form['bookDownloadUrl']
+        bookOldImageSrc = request.form['bookOldImageSrc']
+        bookNewImageSrc = request.form['bookNewImageSrc']
+        bookDescription = request.form['bookDescription']
+
+        if not bookNewImageSrc:
+            bookUpdatedImage = bookOldImageSrc
+        else:
+            bookSplitedImage = bookOldImageSrc.split(os.sep)
+            bookImage = '/static/images/authors/' + bookSplitedImage[-1]
+            bookUpdatedImage = bookImage
+            moveAuthorImageToFolder(bookSplitedImage[-1])
+
+        myCursor = mysql.connection.cursor()
+        myCursor.execute("UPDATE books SET Title = %s, Author = %s, Year = %s, Type = %s, BookSection = %s, IsActive = %s, " + 
+        "IsBestBook = %s, IsClassicBook = %s, DownloadUrl = %s, BookImage = %s, BookTooltip = %s WHERE Title = %s", 
+        (bookTitle, bookAuthor, bookYear, bookType, bookSection, activeBook, bestBook, classicBook, bookDownloadUrl,
+        bookUpdatedImage, bookDescription, title))
+        mysql.connection.commit()
+        myCursor.close()
+        
     return redirect(url_for('adminPage'))
 
-@app.route("/updateAuthor/", methods=['POST']) #TO DO
+@app.route("/updateAuthor/", methods=['POST'])
 def updateAuthor():
     if request.method == "POST":
-        print("xcvx")
+        authorName = request.form['authorName']
+
+        myCursor = mysql.connection.cursor()
+        sqlQuery = f"SELECT * FROM authorUpdateView WHERE Name = '{authorName}'"
+        myCursor.execute(sqlQuery)
+        authorInfo = myCursor.fetchall()
+        myCursor.close()
+
+        if not authorInfo:
+            flash("Author does not exists on Data Base, it cannot be updated")
+            return redirect(url_for('adminContent', type = 'updateAuthors'))
+
+    return render_template('updateAuthorInfo.html', authorInfo = authorInfo, authorName = authorName)
+
+@app.route("/sendUpdatedAuthorInfo/<author>", methods=['POST'])
+def sendUpdatedAuthorInfo(author):
+    if request.method == "POST":
+        #authorSplitedImage = ""
+
+        authorName = request.form['authorName']
+        authorSection = request.form['authorSection']
+        birthDeathDate = request.form['birthDeathDate']
+        authorActive = int(request.form['authorActive'])
+        authorDescription = request.form['authorDescription']
+        authorNewImageSrc = request.form['authorNewImageSrc']
+        authorOldImageSrc = request.form['authorOldImageSrc']
+
+        if not authorNewImageSrc:
+            authorUpdatedImage = authorOldImageSrc
+        else:
+            authorSplitedImage = authorNewImageSrc.split(os.sep)
+            authorImage = '/static/images/authors/' + authorSplitedImage[-1]
+            authorUpdatedImage = authorImage
+            moveAuthorImageToFolder(authorSplitedImage[-1])
+
+        myCursor = mysql.connection.cursor()
+        myCursor.execute("UPDATE authors SET Name = %s, Section = %s, BirthDeathDate = %s, " + 
+        "IsActive = %s, Description = %s, AuthorImage = %s WHERE Name = %s", 
+        (authorName, authorSection, birthDeathDate, authorActive, authorDescription, authorUpdatedImage, author))
+        mysql.connection.commit()
+        myCursor.close()
 
     return redirect(url_for('adminPage'))
 
