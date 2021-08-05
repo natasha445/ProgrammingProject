@@ -182,7 +182,7 @@ def submitNewAuthor():
         authorDescription = request.form['authorDescription']
 
         authorImage = authorImagePath.split(os.sep)
-        authorImageSrc = '/static/authors' + authorImage[-1]
+        authorImageSrc = '/static/images/authors/' + authorImage[-1]
         
         authorDuplicate = checkAuthorDuplicate(authorName)
 
@@ -267,7 +267,7 @@ def updateUser():
         userName = request.form['userName']
 
         myCursor = mysql.connection.cursor()
-        sqlQuery = f"SELECT * FROM usersUpdateView WHERE UserName = '{userName}'" #muestra los campos especificos
+        sqlQuery = f"SELECT * FROM usersUpdateView WHERE UserName = '{userName}'"
         myCursor.execute(sqlQuery)
         userInfo = myCursor.fetchall()
         myCursor.close()
@@ -329,10 +329,10 @@ def sendUpdatedBookInfo(title):
         if not bookNewImageSrc:
             bookUpdatedImage = bookOldImageSrc
         else:
-            bookSplitedImage = bookOldImageSrc.split(os.sep)
-            bookImage = '/static/images/authors/' + bookSplitedImage[-1]
+            bookSplitedImage = bookNewImageSrc.split(os.sep)
+            bookImage = '/static/images/' + bookSplitedImage[-1]
             bookUpdatedImage = bookImage
-            moveAuthorImageToFolder(bookSplitedImage[-1])
+            moveBookCoverImageToFolder(bookSplitedImage[-1])
 
         myCursor = mysql.connection.cursor()
         myCursor.execute("UPDATE books SET Title = %s, Author = %s, Year = %s, Type = %s, BookSection = %s, IsActive = %s, " + 
@@ -364,8 +364,6 @@ def updateAuthor():
 @app.route("/sendUpdatedAuthorInfo/<author>", methods=['POST'])
 def sendUpdatedAuthorInfo(author):
     if request.method == "POST":
-        #authorSplitedImage = ""
-
         authorName = request.form['authorName']
         authorSection = request.form['authorSection']
         birthDeathDate = request.form['birthDeathDate']
